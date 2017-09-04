@@ -1,0 +1,37 @@
+/*
+ * This is the main program for the simulation of the moving light example for the local plc.  <br/>
+ * Only the program logic is executed.                                                         <br/>
+ */
+PROGRAM MovingLightSimulation
+	VAR_GLOBAL
+		switchInvert : BOOL;
+		outLedPattern : LWORD;
+	END_VAR
+
+	VAR
+		movingLight : MovingLight;
+		stringPattern : STRING[64];
+	END_VAR
+
+	movingLight(numberOfLEDs:=GetNumberOfLEDs());
+
+	stringPattern := PrepareString(outLedPattern);
+
+END_PROGRAM
+
+FUNCTION PrepareString : STRING[64]
+      VAR_INPUT
+            pattern : LWORD;
+      END_VAR
+      VAR
+            idx : USINT;
+      END_VAR
+
+      FOR idx := 0 TO 63 DO
+        if (BIT_TST(pattern, 63 - idx)) THEN
+            PrepareString[idx] := 'X';
+        ELSE
+            PrepareString[idx] := '-';
+        END_IF;
+      END_FOR;
+END_FUNCTION

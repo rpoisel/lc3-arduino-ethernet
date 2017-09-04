@@ -1,0 +1,31 @@
+/*
+ * This is the main program for the Controllino moving light example. <br/>
+ * The following steps are performed:                                 <br/>
+ * - initialize the Controllino system (called only once)             <br/>
+ * - read inputs                                                      <br/>
+ * - execute program logic                                            <br/>
+ * - write outputs                                                    <br/>
+ */
+PROGRAM ControllinoMovingLight
+	VAR_GLOBAL
+		switchInvert : BOOL;
+		outLedPattern : LWORD;
+	END_VAR
+	
+	VAR
+		isInitialized : BOOL;
+		movingLight : MovingLight;
+		ethernet : HandleEthernet;
+	END_VAR
+
+	IF NOT isInitialized THEN
+		ControllinoInitialize(ENO => isInitialized);
+	END_IF;
+
+	MapInputsToVariables();
+	movingLight(numberOfLEDs := GetNumberOfLEDs());
+	MapVariablesToOutputs();
+
+	ethernet();
+
+END_PROGRAM

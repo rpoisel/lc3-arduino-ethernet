@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project>
+    <configuration name="ControllinoMAXIAutomationConfiguration">
+        <resource name="controllinoMAXIAutomation">
+            <variable instancePath="ControllinoMovingLight.switchInvert"/>
+            <variable instancePath="ControllinoMovingLight.outLedPattern"/>
+        </resource>
+    </configuration>
+</project>

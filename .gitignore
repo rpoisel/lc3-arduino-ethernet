@@ -1,3 +1,10 @@
+# LC3
+/src-gen/
+/target/
+.cproject
+*.rule
+*.db
+
 # Prerequisites
 *.d
 

@@ -1,0 +1,52 @@
+/*
+ * Number of LEDs for Controllino MAXI Automation platform
+ */
+FUNCTION GetNumberOfLEDs: USINT
+	GetNumberOfLEDs := 18;
+END_FUNCTION
+
+FUNCTION GetNumberOfInputs: USINT
+	GetNumberOfInputs := 4;
+END_FUNCTION
+
+FUNCTION ControllinoMapDigitalInputIdxToPin : USINT
+	VAR_INPUT
+		index : USINT;
+	END_VAR
+	CASE index OF
+		0 : ControllinoMapDigitalInputIdxToPin := ControllinoMaxiAutomationDigital#I0;
+		1 : ControllinoMapDigitalInputIdxToPin := ControllinoMaxiAutomationDigital#I1;
+		2 : ControllinoMapDigitalInputIdxToPin := ControllinoMaxiAutomationDigital#I2;
+		3 : ControllinoMapDigitalInputIdxToPin := ControllinoMaxiAutomationDigital#I3;
+	ELSE
+		ENO := FALSE;
+	END_CASE;
+END_FUNCTION
+
+FUNCTION ControllinoMapDigitalOutputIdxToPin : USINT
+	VAR_INPUT
+		index : USINT;
+	END_VAR
+	CASE index OF
+		 0 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D0;
+		 1 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D1;
+		 2 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D2;
+		 3 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D3;
+		 4 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D4;
+		 5 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D5;
+		 6 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D6;
+		 7 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#D7;
+		 8 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R0;
+		 9 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R1;
+		10 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R2;
+		11 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R3;
+		12 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R4;
+		13 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R5;
+		14 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R6;
+		15 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R7;
+		16 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R8;
+		17 : ControllinoMapDigitalOutputIdxToPin := ControllinoMaxiAutomationDigital#R9;
+	ELSE
+		ENO := FALSE;
+	END_CASE;
+END_FUNCTION

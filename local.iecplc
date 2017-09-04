@@ -1,0 +1,21 @@
+/*
+ * This is a logi.CAD 3 template for the internal PLC
+ */
+
+{
+	CHANNEL LocalChannel
+		TCP
+			ADDRESS := 127.0.0.1;
+			PORT    := 1534;
+		END_TCP
+	END_CHANNEL
+}
+
+CONFIGURATION SimulationConfiguration
+	RESOURCE controllinoSimulation ON BuiltInPlc { ON_CHANNEL := LocalChannel }
+		TASK DefaultTask ( INTERVAL := TIME#500ms , PRIORITY := 38229 );
+		PROGRAM MovingLightSimulation WITH DefaultTask :
+			MovingLightSimulation;
+	END_RESOURCE
+END_CONFIGURATION
+

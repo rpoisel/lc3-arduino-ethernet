@@ -1,0 +1,48 @@
+/*
+ * This function initializes required IO lines
+ */
+FUNCTION ControllinoInitialize
+	VAR
+		cnt : USINT;
+	END_VAR
+	FOR cnt := 0 TO GetNumberOfLEDs() DO
+		ArduinoPinMode(pin := ControllinoMapDigitalOutputIdxToPin(cnt), mode := ArduinoPinDirection#OUTPUT);
+	END_FOR;
+	FOR cnt := 0 TO GetNumberOfInputs() DO
+		ArduinoPinMode(pin := ControllinoMapDigitalInputIdxToPin(cnt), mode := ArduinoPinDirection#INPUT);
+	END_FOR;
+END_FUNCTION
+
+/*
+ * This function transfers data from Controllino inputs to global variables used in the logic
+ */
+FUNCTION MapInputsToVariables
+	VAR_EXTERNAL
+		switchInvert : BOOL;
+	END_VAR
+	VAR
+		pinInput : USINT;
+	END_VAR
+
+	pinInput := ControllinoMapDigitalInputIdxToPin(index := 0, ENO => ENO);
+	IF NOT ENO THEN
+		RETURN;
+	END_IF;
+	switchInvert := ArduinoDigitalRead(pin := pinInput);
+END_FUNCTION
+
+/*
+ * This function transfers data from the global variables used in the logic to the Controllino outputs
+ */
+FUNCTION MapVariablesToOutputs
+	VAR_EXTERNAL
+		outLedPattern     : LWORD;
+	END_VAR
+	VAR
+		cnt : USINT;
+	END_VAR
+
+	FOR cnt := 0 TO GetNumberOfLEDs() DO
+		ArduinoDigitalWrite(pin := ControllinoMapDigitalOutputIdxToPin(cnt), value := BIT_TST(outLedPattern,cnt));
+	END_FOR;
+END_FUNCTION

@@ -1,0 +1,120 @@
+
+/*
+ * This is an example for controlling and shifting LEDs of the hardware, when activating a push button on the hardware:
+ *   If the push button on the hardware is pressed down, the LEDs are inverted.
+ */
+FUNCTION_BLOCK MovingLight
+	VAR_INPUT
+	/* different platforms have a different number of LEDs */
+		numberOfLEDs : USINT;
+	END_VAR
+	VAR
+		data : MovingLight_Data;
+
+		SetModesAccordingToInputs : MovingLight_SetModesAccordingToInputs;
+	END_VAR
+
+	/* At least one LED must be turned on */
+	IF data.ledPattern = 0 THEN
+		data.ledPattern := 16#08;
+	END_IF;
+
+	SetModesAccordingToInputs(data := data);
+	MovingLight_ShiftPatternAccordingToShiftDirection(data := data);
+	MovingLight_HandleDirectionChange(numberOfLeftMostLED := numberOfLEDs - 1, data := data);
+	MovingLight_WritePatternToOutput(data := data);
+
+END_FUNCTION_BLOCK
+
+/*
+ * instance data for moving light module
+ */
+TYPE
+	MovingLight_Data : STRUCT
+	/* shift direction (true = shift left, false = shift right */
+		shiftLeft : BOOL;
+		/* invert pattern */
+		invertLeds : BOOL;
+		/* internal led pattern */
+		ledPattern : LWORD;
+	END_STRUCT;
+END_TYPE
+
+/*
+ * changes modes if rising edge of input is detected:
+ *   switchInvert: toggle invert mode
+ */
+FUNCTION_BLOCK MovingLight_SetModesAccordingToInputs
+	VAR_IN_OUT
+		data : MovingLight_Data;
+	END_VAR
+
+	VAR
+		invertTrigger : R_TRIG;
+	END_VAR
+
+	VAR_EXTERNAL
+		switchInvert : BOOL;
+	END_VAR
+
+	/* If the push button is pressed down, invert mode is toggled */
+	IF invertTrigger.Q THEN
+		data.invertLeds := NOT data.invertLeds;
+	END_IF;
+
+END_FUNCTION_BLOCK
+
+/*
+ * in cycle mode, changes shift direction if left/rightmost led is on
+ */
+FUNCTION MovingLight_HandleDirectionChange
+	VAR_INPUT
+	/* different platforms have a different number of LEDs */
+		numberOfLeftMostLED : USINT;
+	END_VAR
+
+	VAR_IN_OUT
+		data : MovingLight_Data;
+	END_VAR
+
+	/* set direction to right if leftmost led is on */
+	IF BIT_TST(IN := data.ledPattern, N := numberOfLeftMostLED) THEN
+		data.shiftLeft := FALSE;
+		/* set direction to left if rightmost led is on */
+	ELSIF BIT_TST(IN := data.ledPattern, N := 0) THEN
+		data.shiftLeft := TRUE;
+	END_IF;
+
+END_FUNCTION
+
+FUNCTION MovingLight_ShiftPatternAccordingToShiftDirection
+	VAR_IN_OUT
+		data : MovingLight_Data;
+	END_VAR
+
+	IF data.shiftLeft THEN
+		/* Rotate the LEDs to the left */
+		data.ledPattern := ROL(IN := data.ledPattern, N := 1);
+	ELSE
+	/* Rotate the LEDs to the right */
+		data.ledPattern := ROR(IN := data.ledPattern, N := 1);
+	END_IF;
+
+END_FUNCTION
+
+FUNCTION MovingLight_WritePatternToOutput
+	VAR_IN_OUT
+		data : MovingLight_Data;
+	END_VAR
+
+	VAR_EXTERNAL
+		outLedPattern : LWORD;
+	END_VAR
+
+	IF data.invertLeds THEN
+		outLedPattern := NOT data.ledPattern;
+	ELSE
+		outLedPattern := data.ledPattern;
+	END_IF;
+
+END_FUNCTION

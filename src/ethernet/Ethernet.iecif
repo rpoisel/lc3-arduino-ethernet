@@ -1,0 +1,22 @@
+{extern_cxx}
+
+FUNCTION EthernetBegin
+	VAR_INPUT
+	  mac : ADDR_MAC;
+	  ip : ADDR_IP;
+	  tcp_port : ADDR_PORT;
+	  enable : BOOL;
+	END_VAR
+	VAR_OUTPUT
+	  success : BOOL := TRUE;
+	END_VAR
+END_FUNCTION
+
+FUNCTION EthernetServer
+	VAR_INPUT
+	  enable : BOOL;
+	END_VAR
+	VAR_OUTPUT
+	  success : BOOL;
+	END_VAR
+END_FUNCTION

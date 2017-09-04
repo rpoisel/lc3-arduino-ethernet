@@ -1,0 +1,43 @@
+/*
+ * This is a logi.CAD 3 template for the Controllino MAXI Automation PLC object
+ */
+
+{
+	CHANNEL ControllinoMAXIAutomationChannel
+		TCP
+			ADDRESS := 127.0.0.1;
+			PORT := 1535;
+		END_TCP
+	END_CHANNEL
+}
+
+{
+	TARGET targetControllinoMAXIAutomation
+		PARAMS := '{
+			"transport": {
+				"type": "RS232",
+				"parameters": {
+					"port": "/dev/ttyACM0",
+					"baud": 115200
+				}
+			},
+			"infrastructure": {
+				"type": "AVRDUDE",
+				"parameters": {
+					"port": "/dev/ttyACM0",
+					"baud": 115200,
+					"programmer": "wiring",
+					"processor": "atmega2560"
+				}
+			}
+		}';
+	END_TARGET
+}
+
+CONFIGURATION ControllinoMAXIAutomationConfiguration
+	RESOURCE controllinoMAXIAutomation ON ControllinoMAXIAutomation { ON_TARGET := targetControllinoMAXIAutomation, VIA_CHANNEL := ControllinoMAXIAutomationChannel }
+		TASK DefaultTask ( INTERVAL := TIME#500ms , PRIORITY := 38229 );
+		PROGRAM ControllinoMovingLight WITH DefaultTask :
+			ControllinoMovingLight;
+	END_RESOURCE
+END_CONFIGURATION

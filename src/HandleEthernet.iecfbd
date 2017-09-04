@@ -1,0 +1,56 @@
+FUNCTION_BLOCK HandleEthernet
+  VAR
+    mac : ADDR_MAC := [16#DE, 16#AD, 16#BE, 16#EF, 16#FE, 16#ED];
+    ip : ADDR_IP := [192, 168, 99, 123];
+    tcpPort : ADDR_PORT := 80;
+    init : BOOL := TRUE;
+  END_VAR
+
+  (*
+
+    // Network 1:
+    EthernetBegin(mac := mac, ip := ip, tcp_port := tcpPort, enable := init, success => @C(1).success);
+    NOT(IN := @C(1).success, NOT => init);
+
+    // Network 2:
+    NOT(IN := init, NOT => @C(7).NOT);
+    EthernetServer(enable := @C(7).NOT);
+
+  *)
+
+  @C(1) : @F(EthernetBegin), @R(450.0, 110.0, 270.0, 78.0), @I(@N(mac), @L(9.5)), @I(@N(ip), @L(29.5)), @I(@N(tcp_port), @L(49.5)), @I(@N(enable), @L(69.5)), @O(@N(success), @R(9.5));
+  @C(2) : @F(EthernetServer), @R(450.0, 230.0, 120.0, 78.0), @I(@N(enable), @L(9.5)), @O(@N(success), @R(9.5));
+  @VF(4) : @E(mac), @R(170.0, 110.0, 140.0, 19.0);
+  @VF(8) : @E(ip), @R(170.0, 130.0, 140.0, 19.0);
+  @VF(9) : @E(tcpPort), @R(170.0, 150.0, 140.0, 19.0);
+  @VF(3) : @E(init), @R(170.0, 170.0, 140.0, 19.0);
+  @VF(6) : @E(init), @R(880.0, 110.0, 140.0, 19.0);
+  @VF(13) : @E(init), @R(170.0, 230.0, 140.0, 19.0);
+  @C(7) : @F(NOT), @R(350.0, 230.0, 60.0, 18.5), BOOL, @I(@N(IN), @L(9.5)), @O(@N(NOT), @R(9.5));
+  @C(16) : @F(NOT), @R(780.0, 110.0, 60.0, 18.5), BOOL, @I(@N(IN), @L(9.5)), @O(@N(NOT), @R(9.5));
+
+  @G(10) :
+     @L(@VF(4).o, @C(1).mac)
+    ;
+  @G(11) :
+     @L(@VF(8).o, @C(1).ip)
+    ;
+  @G(12) :
+     @L(@VF(9).o, @C(1).tcp_port)
+    ;
+  @G(5) :
+     @L(@VF(3).o, @C(1).enable)
+    ;
+  @G(14) :
+     @L(@C(7).NOT, @C(2).enable)
+    ;
+  @G(15) :
+     @L(@VF(13).o, @C(7).IN)
+    ;
+  @G(17) :
+     @L(@C(1).success, @C(16).IN)
+    ;
+  @G(18) :
+     @L(@C(16).NOT, @VF(6).i)
+    ;
+END_FUNCTION_BLOCK
